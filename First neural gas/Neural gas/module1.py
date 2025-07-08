@@ -4,18 +4,17 @@ import plotly.express as px
 import plotly.graph_objs as go
 from sklearn.utils import shuffle
 
-dim = 2
-# начальны?параметр?
-epsilon1 = 0.2
-epsilon2 = 0.005
-max_age = 25
-epochs=35
-count_iter=80
-err_alpha = 0.5
-err_betta =0.954
+# РџР°СЂР°РјРµС‚СЂС‹ Р°Р»РіРѕСЂРёС‚РјР°
+dim = 2 # Р Р°Р·РјРµСЂРЅРѕСЃС‚СЊ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР°
+epsilon1 = 0.2 # РџР°СЂР°РјРµС‚СЂ РґР»СЏ СЃРјРµС‰РµРЅРёСЏ Р±Р»РёР¶Р°Р№С€РµРіРѕ РЅРµСЂРѕРЅР°
+epsilon2 = 0.005 # РџР°СЂР°РјРµС‚СЂ РґР»СЏ СЃРјРµС‰РµРЅРёСЏ СЃРѕСЃРµРґРµР№ Р±Р»РёР¶Р°Р№С€РµРіРѕ РЅРµР№СЂРѕРЅР°
+max_age = 25 # РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РІРѕР·СЂР°СЃС‚ СЂС‘Р±РµСЂ
+epochs = 35 # РєРѕР»РёС‡РµСЃС‚РІРѕ СЌРїРѕС… РѕР±СѓС‡РµРЅРёСЏ
+count_iter = 80 # РљРѕР»РёС‡РµСЃС‚РІРѕ РёС‚РµСЂР°С†РёР№, РґР»СЏ РІСЃС‚Р°РІРєРё РЅРѕРІРѕРіРѕ РЅРµР№СЂРѕРЅР°
+err_alpha = 0.5 # РЈРјРµРЅСЊС€РµРЅРёРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ Р»РѕРєР°Р»СЊРЅРѕР№ РѕС€РёР±РєРё
+err_betta = 0.954 # РЈРјРµРЅСЊС€РµРЅРёРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ Р»РѕРєР°Р»СЊРЅРѕР№ РѕС€РёР±РєРё Сѓ РЅРѕРІРѕРіРѕ РЅРµР№СЂРѕРЅР°
 
-#рандомны?точк?на плоскост??квадрате 10000 на 10000
-#ТЕСТ?ВСТАВЛЯТ?СЮДА
+# РЎРѕСЃС‚Р°РІР»СЏРµРј С‚РµСЃС‚
 X1 = np.random.randint(1500,3500, (420, dim))
 X22 = np.random.randint(0,5000, (5000, dim))
 X2=[]
@@ -23,8 +22,6 @@ for x in X22:
     if ((x[0]-2500)**2+(x[1]-2500)**2)<=2000**2 and ((x[0]-2500)**2+(x[1]-2500)**2)>=1500**2:
         X2.append(x)
 X=np.array(list(X1)+X2)
-# ?ДО СЮДА
-
 X=shuffle(X)
 
 df={"x":[i[0] for i in X],"y": [i[1] for i in X]}
@@ -33,12 +30,12 @@ fig.show()
 X=X.astype("float32")
 X/=100000
 
-# словар?со всей информацие??каждом нейрон?(вектор местоположен?, локальная ошибка, связанные ?ни?нейрон??возрас?данных связе?
+# РќР°С‡РІР»СЊРЅС‹Рµ 2 РЅРµР№СЂРѕРЅР° РІ РїСЂРѕРёР·РІРѕР»СЊРЅС‹С… С‚РѕС‡РєР°С… СЂР°СЃСЃРјР°С‚СЂРёРІР°РµРјРѕРіРѕ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР°
 neirons={0:{"vector":np.random.randint(0,5000,dim), "vertexes":[[1,0]], "Lockal_error": 0},1:{"vector":np.random.randint(0,5000,dim), "vertexes":[[0,0]],"Lockal_error": 0}}
 
 for i in (0,1):
-    neirons[i]["vector"]=neirons[i]["vector"].astype("float32")
-    neirons[i]["vector"]/=100000
+    neirons[i]["vector"] = neirons[i]["vector"].astype("float32")
+    neirons[i]["vector"] /= 100000
 
 
 for epoch in range(epochs):
@@ -46,44 +43,39 @@ for epoch in range(epochs):
     for i in range(len(X)):
 
         min_dist = 10**20
-        number_great_neiron_1=0
-        number_great_neiron_2=0
+        number_great_neiron_1 = 0
+        number_great_neiron_2 = 0
 
-        for j in list(neirons.keys()): #поис?ближайшего нейрон?
+        # Р’С‹Р±РѕСЂ Р±Р»РёР¶Р°Р№С€РµРіРѕ РЅРµР№СЂРѕРЅР°
+        for j in list(neirons.keys()): 
             dist = np.sqrt(np.sum(np.square(X[i]-neirons[j]["vector"])))
+            if dist < min_dist:
+                min_dist = dist
+                number_great_neiron_1 = j
 
-            if dist<min_dist:
-                min_dist=dist
-                number_great_neiron_1=j
-        
+        # Р’С‹Р±РѕСЂ Р±Р»РёР¶Р°Р№С€РµРіРѕ Рє number_great_neiron_1 РЅРµР№СЂРѕРЅР° 
         min_dist = 10**20
-        for j in list(neirons.keys()): #поис?второг?ближайшего нейрон?
+        for j in list(neirons.keys()): 
             dist = np.sqrt(np.sum(np.square(X[i]-neirons[j]["vector"])))
-            if dist<min_dist and j!=number_great_neiron_1:
-                min_dist=dist
-                number_great_neiron_2=j
+            if dist < min_dist and j != number_great_neiron_1:
+                min_dist = dist
+                number_great_neiron_2 = j
+                
+        # РЈРјРµРЅСЊС€Р°РµРј СЂР°СЃСЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ РґР°РЅРЅРѕР№ С‚РѕС‡РєРѕР№ Рё РґРІСѓРјСЏ СЂР°СЃСЃРјР°С‚СЂРёРІР°РµРјС‹РјРё РЅРµР№СЂРѕРЅР°РјРё, Р° С‚Р°РєР¶Рµ РёС… СЃРѕСЃРµРґСЏРјРё Рё РґР°РЅРЅРѕР№ С‚РѕС‡РєРѕР№ РІ Р·Р°РґР°РЅРЅРѕРµ С‡РёСЃР»Рѕ СЂР°Р·
+        neirons[number_great_neiron_1]["Lockal_error"] += np.sum(np.square(X[i] - neirons[number_great_neiron_1]["vector"]))
+        neirons[number_great_neiron_1]["vector"] += epsilon1*(X[i] - neirons[number_great_neiron_1]["vector"])
 
-        #print(number_great_neiron_1,number_great_neiron_2,min_dist)
-        #приближаем ближайши?нейрон ?всех ег?соседе?
-        neirons[number_great_neiron_1]["Lockal_error"]+=np.sum(np.square(X[i]-neirons[number_great_neiron_1]["vector"]))
-        neirons[number_great_neiron_1]["vector"]+=epsilon1*(X[i]-neirons[number_great_neiron_1]["vector"])
-
-        #print(len(neirons))
-        #out_list = [k[0] for k in neirons[number_great_neiron_1]["vertexes"]]
-
-        #корректируем возраста связе?ближ. нейрон??всех ег?соседе?
         for k in neirons[number_great_neiron_1]["vertexes"]:
             neirons[k[0]]["Lockal_error"]+=np.sum(np.square(X[i]-neirons[k[0]]["vector"]))
             neirons[k[0]]["vector"]+=epsilon2*(X[i]-neirons[k[0]]["vector"])
             k[1]+=1
 
             for l in neirons[k[0]]["vertexes"]:
-                if l[0]==number_great_neiron_1: # or (l[0] not in out_list):
-                    l[1]+=1
+                if l[0]==number_great_neiron_1:
+                    l[1]+=1 # РўР°РєР¶Рµ РѕР±РЅРѕРІР»СЏРµРј РІРѕР·СЂР°СЃС‚ Сѓ СЂС‘Р±РµСЂ, СЃРѕРµРґРёРЅСЏСЋС‰РёС… 2 Р±Р»РёР¶Р°Р№С€РёС… РЅРµР№СЂРѕРЅР° Рё РёС… СЃРѕСЃРµРґРµР№
                     break
                     
-
-        #если первый ?второй ближ. нейрон?соединен?- обну?ем возрас?их связи, инач?- создаё?нову?связь межд?ними
+        # РўР°РєР¶Рµ РѕР±РЅРѕРІР»СЏРµРј РІРѕР·СЂР°СЃС‚ Сѓ СЂС‘Р±РµСЂ, СЃРѕРµРґРёРЅСЏСЋС‰РёС… 2 Р±Р»РёР¶Р°Р№С€РёС… РЅРµР№СЂРѕРЅР° Рё РёС… СЃРѕСЃРµРґРµР№
         flag1=True
         for  k in neirons[number_great_neiron_1]["vertexes"]:
             if number_great_neiron_2 == k[0]:
@@ -97,17 +89,18 @@ for epoch in range(epochs):
                 k[1]=0
                 flag2=False
                 break
-
+                
+        # Р”РѕР±Р°РІР»СЏРµРј СЂРµР±СЂРѕ РјРµР¶РґСѓ РґРІСѓРјСЏ СЂР°СЃСЃРјР°С‚СЂРёРІР°РµРјС‹РјРё РЅРµР№СЂРѕРЅР°РјРё
         if (flag1 and flag2):
             neirons[number_great_neiron_1]["vertexes"].append([number_great_neiron_2,0])
             neirons[number_great_neiron_2]["vertexes"].append([number_great_neiron_1,0])
         
-        # удаляем связи, возрас?которы?больше максимальног? ?нейрон? которы?остались бе?связе?
+        # РЈРґР°Р»РµРЅРёРµ СЂС‘Р±РµСЂ СЃ РѕС‡РµРЅСЊ Р±РѕР»СЊС€РёРј РІРѕР·СЂР°СЃС‚РѕРј
         
         for j in neirons:
             new_ver=[]
             for k in neirons[j]["vertexes"]:
-                if k[1]<=max_age:
+                if k[1] <= max_age:
                    new_ver.append(k)
             neirons[j]["vertexes"]=new_ver
         
@@ -117,19 +110,18 @@ for epoch in range(epochs):
             if len(neirons[j]["vertexes"]):
                 new_neirons[j]=neirons[j]
 
-        neirons=new_neirons
+        neirons = new_neirons
 
-        # каждые count_iter итераций выполняем действ?
+        # Р”РѕР±Р°РІР»СЏРµРј РЅРѕРІС‹Р№ РЅРµР№СЂРѕРЅ РјРµР¶РґСѓ С‚РµРј РЅРµР№СЂРѕРЅРѕРј, Сѓ РєРѕС‚РѕСЂРѕРіРѕ СЃР°РјР°СЏ Р±РѕР»СЊС€Р°СЏ Р»РѕРєР°Р»СЊРЅР°СЏ РѕС€РёР±РєР° (СЃСѓРјРјР° РєРІР°РґСЂР°С‚РѕРІ РІСЃРµС… РїРµСЂРµРјРµС‰РµРЅРёР№ РґР°РЅРЅРѕРіРѕ РЅРµР№СЂРѕРЅР°) Рё СЃРѕСЃРµРґР° РґР°РЅРЅРѕРіРѕ РЅРµР№СЂРѕРЅР° СЃ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ Р»РѕРєР°Р»СЊРЅРѕР№ РѕС€РёР±РєРѕР№
         if (epoch*len(X)+i+1) % count_iter == 0:
             max_err=-1
             neiron_err_1=0
-            # ищем нейрон ?максимальной локально?ошибко?
+        
             for j in (list(neirons.keys())):
-                if neirons[j]["Lockal_error"]>max_err:
+                if neirons[j]["Lockal_error"] > max_err:
                     max_err=neirons[j]["Lockal_error"]
                     neiron_err_1=j
 
-            # ищем соседа данног?нейрон??максимальной локально?ошибко?
             max_err=-1
             neiron_err_2=0
             for j in neirons[neiron_err_1]["vertexes"]:
@@ -137,18 +129,16 @@ for epoch in range(epochs):
                     max_err=neirons[j[0]]["Lockal_error"]
                     neiron_err_2=j[0]
 
-            # ищем создаё?новы?нейрон посередине межд?двумя данным?нейронам??переопреде?ем связи
-            new_neiron = max(list(neirons.keys()))+1
-            neirons[new_neiron]={}
-            neirons[new_neiron]["vector"]=(neirons[neiron_err_1]["vector"]+neirons[neiron_err_2]["vector"])/2
-            neirons[new_neiron]["Lockal_error"]=neirons[neiron_err_1]["Lockal_error"]*err_betta
-            neirons[new_neiron]["vertexes"]=[[neiron_err_1,0],[neiron_err_2,0]]
+            # РЈСЃС‚Р°РЅРѕРІРєР° РїР°СЂР°РјРµС‚СЂРѕРІ РЅРѕРІРѕРіРѕ РЅРµР№СЂРѕРЅР°
+            new_neiron = max(list(neirons.keys())) + 1
+            neirons[new_neiron] = {}
+            neirons[new_neiron]["vector"] = (neirons[neiron_err_1]["vector"] + neirons[neiron_err_2]["vector"])/2
+            neirons[new_neiron]["Lockal_error"] = neirons[neiron_err_1]["Lockal_error"]*err_betta
+            neirons[new_neiron]["vertexes"] = [[neiron_err_1,0],[neiron_err_2,0]]
 
-            #уменьшае?значен? ошибок для ране?найденны?нейронов
             neirons[neiron_err_1]["Lockal_error"]*=err_alpha
             neirons[neiron_err_2]["Lockal_error"]*=err_alpha
 
-            # переопреде?ем связи для нового нейрон?
             for j in neirons[neiron_err_1]["vertexes"]:
                 if j[0]==neiron_err_2:
                     neirons[new_neiron]["vertexes"][0][1],neirons[new_neiron]["vertexes"][1][1]=j[1],j[1]
@@ -171,7 +161,9 @@ for i in neirons:
 for i in range(len(matrix)):
     for j in range(len(matrix[i])):
         if matrix[i][j]!=matrix[j][i] and i!=j:
-            print("*")"""
+        print("*")"""
+
+# Р Р°Р·РґР»РµРЅРёРµ РїРѕР»СѓС‡РµРЅРЅРѕРіРѕ РіСЂР°С„Р° РЅР° РєРѕРјРїРѕРЅРµРЅС‚С‹ СЃРІСЏР·РЅРѕСЃС‚Рё РїРѕРёСЃРєРѕРј РІ С€РёСЂРёРЅСѓ
 sp_sm={}
 labs = {}
 for i in list(neirons.keys()):
@@ -200,6 +192,7 @@ while 1 in labs.values():
     components[count_comp]=list(component)
     count_comp+=1
 
+# Р¤РѕСЂРјРёСЂСѓРµРј РєР»Р°СЃС‚РµСЂС‹
 classes=[[] for i in range(len(components))]
 for x in X:
     min_dist=10**20
