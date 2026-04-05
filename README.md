@@ -51,5 +51,5 @@ pip install numpy matplotlib scikit-learn
 
 - Параметры epsilon1, epsilon2, max_age, count_iter влияют на скорость сходимости и топологию.
 
-##
+## Лицензия
 Проект предоставлен в учебных целях.
